@@ -4,15 +4,23 @@
 #include <sstream>
 #include <numeric>
 #include <iomanip>
+#include <queue>
 #include <math.h>
 
 using namespace std;
 
 class Classifier{
     public:
-    vector<Data> givenData;
+    vector<Data> givenData; //Data structure that contains trained data
     int numOfFeatures;
+    vector<int> featuresSubset;
     //parse here and put the data table into given data.
+
+    struct compareEuclideanDistance{
+        bool operator() (Data a, Data b){
+            return (a.distance > b.distance);
+        }
+    };  
 
     void LoadEntriesFromFile(string filepath){
         ifstream fin;
@@ -89,14 +97,63 @@ class Classifier{
         }
     }
 
-    void train(){
-        
+    void train(string filepath){
+        LoadEntriesFromFile(filepath);
+        vector<vector<double>> featSet = featuresGrouped();
+        normalizer(featSet);
+        // for(int i = 0; i < givenData.size(); i++){
+        //     cout << "INSTANCE ID: " << i + 1 << " " << endl;
+        //     for(int j = 0; j < givenData[i].normalizedFeat.size(); j++){
+        //         cout << givenData[i].normalizedFeat[j] << ", ";
+        //     }
+        //     cout << endl << endl;
+        // }
     }
 
 
-    Data test(Data testEntry){
+    double calculateDistance(Data testPoint, Data neighbor){
+        double dist = 0;
+        for(int i = 0; i < featuresSubset.size(); i++){
 
+            dist += (pow((testPoint.normalizedFeat[featuresSubset[i]] - neighbor.normalizedFeat[featuresSubset[i]]),2));
+            
+        }
+        //cout << "Distance from the test to the neighbor is: " << neighbor.distance << endl;
+        return sqrt(dist);
+    }
 
+    int test(int id, vector<int> featuresToUse, int N){
+        int predictedClass;
+        featuresSubset = featuresToUse;
+        priority_queue<Data, vector<Data>, compareEuclideanDistance> q;
+        for(int i = 0; i < givenData.size(); i++){
+            if(i == id){
+                continue;
+            }
+            givenData[i].setDistance(calculateDistance(givenData[id], givenData[i]));
+            q.push(givenData[i]);
+
+        }
+        vector<Data> nearestNeighbors;
+        int class1 = 0;
+        int class2 = 0;
+        for(int i = 0; i < N; i++){
+            nearestNeighbors.push_back(q.top());
+            if(q.top().classifier == 1){
+                class1++;
+            } else {
+                class2++;
+            }
+        }
+        
+        if(max(class1, class2) == class1){
+            predictedClass = 1;
+        } else {
+            predictedClass = 2;
+        }
+
+    
+        return predictedClass;
     }
 
 };

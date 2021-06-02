@@ -3,22 +3,23 @@
 #include <iostream>
 #include "search.cpp"
 #include "time.h"
-#include "classifier.cpp"
+#include "validator.cpp"
 
 int main(){
 
     Classifier c;
-    c.LoadEntriesFromFile("cs_170_small80.txt");
-    vector<vector<double>> tmp = c.featuresGrouped();
-    //vector<vector<double>> temp = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}; // vector of 3 vector of features
-    c.normalizer(tmp);
-    for(int i = 0; i < c.givenData.size(); i++){
-        cout << "INSTANCE ID: " << i + 1 << " " << endl;
-        for(int j = 0; j < c.givenData[i].normalizedFeat.size(); j++){
-            cout << c.givenData[i].normalizedFeat[j] << ", ";
-        }
-        cout << endl << endl;
-    }
+    Validator v;
+    // c.train("cs_170_small80.txt");
+    c.train("cs_170_large80.txt");
+    v.featuresSubset = {0, 14, 26};
+    double accuracy = v.evaluateAccuracy(c);
+    cout << "Accuracy for Subset {1,15,27} is: " << accuracy << endl;
+
+    // vector<int> f = {0, 1, 2};
+    // //c.calculateDistance(c.givenData[0], c.givenData[1]);
+    // int test = c.test(0, f, 5);
+    // cout << "Data with ID: " << 0 << " is predicted as class: " << test << endl;
+    
 
     // search s;
     // srand (time(NULL));    

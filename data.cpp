@@ -6,6 +6,7 @@ class Data{
     public:
 
     int classifier;
+    double distance;
     vector<double> features;
     vector<double> normalizedFeat;
 
@@ -17,8 +18,9 @@ class Data{
         features.push_back(feat);
     }
 
-    // void setNormalized(vector<double> v){
-    //     normalizedFeat = v;
-    // }
+
+    void setDistance(double dist){
+        distance = dist;
+    }
 
 };
