@@ -9,11 +9,11 @@ int main(){
 
     Classifier c;
     Validator v;
-    // c.train("cs_170_small80.txt");
-    c.train("cs_170_large80.txt");
-    v.featuresSubset = {0, 14, 26};
+    c.train("cs_170_small80.txt");
+    //c.train("cs_170_large80.txt");
+    v.featuresSubset = {2, 4, 6};
     double accuracy = v.evaluateAccuracy(c);
-    cout << "Accuracy for Subset {1,15,27} is: " << accuracy << endl;
+    cout << "Validator percentage is " << accuracy * 100 << "%" << endl;
 
     // vector<int> f = {0, 1, 2};
     // //c.calculateDistance(c.givenData[0], c.givenData[1]);

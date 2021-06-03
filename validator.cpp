@@ -11,6 +11,11 @@ class Validator{
         double evaluateAccuracy(Classifier cl){
             double totalTests = 0;
             double correct = 0;
+            cout << "Validating Classifier with the feature set {";
+            for(int i = 0; i < featuresSubset.size(); i++){
+                cout << featuresSubset[i] + 1 << " ";
+            }
+            cout << "}";
             for(int i = 0; i < cl.givenData.size(); i++){
                 //cout << featuresSubset.size();
                 if(featuresSubset.size() > 0){

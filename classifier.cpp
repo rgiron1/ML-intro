@@ -23,6 +23,7 @@ class Classifier{
     };  
 
     void LoadEntriesFromFile(string filepath){
+        cout << "Loading data from " << filepath <<endl;
         ifstream fin;
         fin.open(filepath);
         if (!fin.is_open()){
@@ -73,6 +74,10 @@ class Classifier{
 
     void normalizer(vector<vector<double>> featureSet){
         vector<double> meanByStd;
+
+        cout << "Normalizing data of " << featureSet.size() << " data entries" << endl;
+        cout << "Training Classifier with the data set" << endl;
+
         
         for(int i = 0; i < featureSet.size(); i++){ //Loop to calculate (avg/stdev) for each feature set
             double avg = 0.0;
