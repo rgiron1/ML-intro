@@ -6,8 +6,10 @@
 #include <iomanip>
 #include <queue>
 #include <math.h>
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 class Classifier{
     public:
@@ -23,7 +25,7 @@ class Classifier{
     };  
 
     void LoadEntriesFromFile(string filepath){
-        cout << "Loading data from " << filepath <<endl;
+        cout << "Loading data from " << filepath << endl;
         ifstream fin;
         fin.open(filepath);
         if (!fin.is_open()){
@@ -74,10 +76,8 @@ class Classifier{
 
     void normalizer(vector<vector<double>> featureSet){
         vector<double> meanByStd;
-
-        cout << "Normalizing data of " << featureSet.size() << " data entries" << endl;
-        cout << "Training Classifier with the data set" << endl;
-
+        
+        cout << "Normalizing data of " << givenData.size() << " data entries" << endl;
         
         for(int i = 0; i < featureSet.size(); i++){ //Loop to calculate (avg/stdev) for each feature set
             double avg = 0.0;
@@ -103,9 +103,22 @@ class Classifier{
     }
 
     void train(string filepath){
+        auto start = high_resolution_clock::now();
         LoadEntriesFromFile(filepath);
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop-start);
+        cout << "Time taken to import data is: " << duration.count()/1000.0 << " ms. " << endl << endl;
+        
+        start = high_resolution_clock::now();
+        
         vector<vector<double>> featSet = featuresGrouped();
+
         normalizer(featSet);
+        stop = high_resolution_clock::now();
+        duration = duration_cast<microseconds>(stop-start);
+        cout << "Time taken to normalize data is: " << duration.count()/1000.0 << " ms. " << endl << endl;
+
+        //stop
         // for(int i = 0; i < givenData.size(); i++){
         //     cout << "INSTANCE ID: " << i + 1 << " " << endl;
         //     for(int j = 0; j < givenData[i].normalizedFeat.size(); j++){

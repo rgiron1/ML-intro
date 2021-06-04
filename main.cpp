@@ -2,18 +2,21 @@
 #include <vector>
 #include <iostream>
 #include "search.cpp"
-#include "time.h"
 #include "validator.cpp"
 
 int main(){
-
     Classifier c;
     Validator v;
     c.train("cs_170_small80.txt");
     //c.train("cs_170_large80.txt");
     v.featuresSubset = {2, 4, 6};
+    
+    auto start = high_resolution_clock::now();
     double accuracy = v.evaluateAccuracy(c);
-    cout << "Validator percentage is " << accuracy * 100 << "%" << endl;
+    cout << endl << "Validator percentage is " << accuracy * 100 << "%" << endl;
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop-start);
+    cout << "Time taken to validate data is: " << duration.count()/1000.0 << " ms. " << endl << endl;
 
     // vector<int> f = {0, 1, 2};
     // //c.calculateDistance(c.givenData[0], c.givenData[1]);
