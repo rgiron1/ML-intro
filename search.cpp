@@ -4,14 +4,23 @@
 #include <iomanip>
 #include "node.cpp"
 #include <iostream>
+#include "validator.cpp"
 class search{
     public:
-        node* forwardSelection(int features){
+        Classifier classifier;
+
+        void setClassifier(Classifier cl){
+            classifier = cl;
+        }
+
+        node* forwardSelection(){
             node* root = new node();
+            int features = classifier.numOfFeatures;
             int numOfChildren = features;
             bool foundNewMax = false;
-            
+            Validator v;
             node* curr = root;
+            root->accuracy = v.evaluateAccuracy(classifier);
             cout << setprecision(3);
             cout << "Using no features and random evaluation, We get an accuracy of " << root->accuracy * 100 << "%" << endl << endl;
             cout << "Beginning search" << endl << endl;
@@ -23,10 +32,15 @@ class search{
                         node* child = new node();
                         child->features = curr->features;
                         child->setFeatures(i);
+                        Validator validOfChildren;
+                        for(auto x : child->features){
+                            validOfChildren.featuresSubset.push_back(x.second);
+                        }
                         cout << "Using the feature set {";
                         for(auto x : child->features){
                             cout << x.second << " ";
                         }
+                        child->accuracy = validOfChildren.evaluateAccuracy(classifier);
                         cout << setprecision(3);
                         cout << "} the accuracy is: " << child->accuracy * 100<< "%" << endl;
                         curr->setChild(child);
@@ -42,7 +56,7 @@ class search{
                     return curr;
                 }
 
-                cout << "Feature set {";
+                cout << endl << "Feature set {";
                 for(auto x : maxNode->features){
                         cout << x.second << " ";
                     }
@@ -54,12 +68,15 @@ class search{
             }
         }
 
-        node* backwardsElimination(int features){
+        node* backwardsElimination(){
             node* root = new node();
+            int features = classifier.numOfFeatures;
             int numOfChildren = 0;
             bool foundNewMax = false;
             for(int i = 1; i < features + 1; i++){
                 root->features[i] = i;
+                Validator rootValid;
+                rootValid.featuresSubset.push_back(i);
             }
             
             node* curr = root;
@@ -74,10 +91,15 @@ class search{
                         node* parent = new node();
                         parent->features = curr->features;
                         parent->features.erase(i);
+                        Validator validOfChild;
+                        for(auto x : parent->features){
+                            validOfChild.featuresSubset.push_back(x.second);
+                        }
                         cout << "Using the feature set {";
                         for(auto x : parent->features){
                             cout << x.second << " ";
                         }
+                        parent->accuracy = validOfChild.evaluateAccuracy(classifier);
                         cout << setprecision(3);
                         cout << "} the accuracy is: " << parent->accuracy * 100<< "%" << endl;
                         curr->setParent(parent);

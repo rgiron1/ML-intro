@@ -2,71 +2,57 @@
 #include <vector>
 #include <iostream>
 #include "search.cpp"
-#include "validator.cpp"
 
 int main(){
     Classifier c;
-    Validator v;
-    c.train("cs_170_small80.txt");
-    //c.train("cs_170_large80.txt");
-    v.featuresSubset = {2, 4, 6};
-    
-    auto start = high_resolution_clock::now();
-    double accuracy = v.evaluateAccuracy(c);
-    cout << endl << "Validator percentage is " << accuracy * 100 << "%" << endl;
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<microseconds>(stop-start);
-    cout << "Time taken to validate data is: " << duration.count()/1000.0 << " ms. " << endl << endl;
-
-    // vector<int> f = {0, 1, 2};
-    // //c.calculateDistance(c.givenData[0], c.givenData[1]);
-    // int test = c.test(0, f, 5);
-    // cout << "Data with ID: " << 0 << " is predicted as class: " << test << endl;
     
 
-    // search s;
-    // srand (time(NULL));    
-    // int features;
-    // int algo;
-    // cout << "Welcome to Ryan Giron's and Simraj Singh's Feature Selection Algorithm" << endl << endl;
+    search s;
+    srand (time(NULL));    
+    string filepath;
+    int algo;
+    cout << "Welcome to Ryan Giron's and Simraj Singh's Feature Selection Algorithm" << endl << endl;
 
-    // cout << "Please enter the number of features: ";
+    cout << "Please enter the file you would like to train and test: ";
 
-    // cin >> features;
+    cin >> filepath;
 
-    // cout << endl;
+    cout << endl;
 
-    // cout << "Type the number of the algorithm you would like to select:" << endl;
-    // cout << "1) Foward Selection" << endl;
-    // cout << "2) Backwards Elimination" << endl;
+    c.train(filepath);
+    s.setClassifier(c);
 
-    // cin >> algo;
+    cout << "Type the number of the algorithm you would like to select:" << endl;
+    cout << "1) Forward Selection" << endl;
+    cout << "2) Backwards Elimination" << endl;
 
-    // cout << endl;
+    cin >> algo;
+
+    cout << endl;
 
 
-    // node* n;
+    node* n;
 
-    // switch(algo){
-    //     case 1: 
-    //         cout << "Foward Selection: " << endl;
-    //         n = s.forwardSelection(features);
-    //         break;
-    //     case 2: 
-    //         cout << "Backwards Elimination: " << endl;
-    //         n = s.backwardsElimination(features);
-    //         break;
-    //     default: 
-    //         cout << "INVALID ENTRY! PLEASE TRY AGAIN" << endl;
-    //         return 0;
-    //         break;
-    // }
+    switch(algo){
+        case 1: 
+            cout << "Foward Selection: " << endl;
+            n = s.forwardSelection();
+            break;
+        case 2: 
+            cout << "Backwards Elimination: " << endl;
+            n = s.backwardsElimination();
+            break;
+        default: 
+            cout << "INVALID ENTRY! PLEASE TRY AGAIN" << endl;
+            return 0;
+            break;
+    }
 
-    // cout << "Finished search! The best feature subset is {";
-    // for(auto x : n->features){
-    //     cout << x.second << " ";
-    // }
-    // cout << setprecision(3);
-    // cout << "}, which has an accuracy of " << n->accuracy * 100 << "%" << endl;
+    cout << "Finished search! The best feature subset is {";
+    for(auto x : n->features){
+        cout << x.second << " ";
+    }
+    cout << setprecision(3);
+    cout << "}, which has an accuracy of " << n->accuracy * 100 << "%" << endl;
 
 }

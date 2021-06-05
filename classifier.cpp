@@ -54,13 +54,6 @@ class Classifier{
         }
         numOfFeatures = givenData[0].features.size();
 
-        // for(int i = 0; i < 13; i++){
-        //     cout << givenData[i].classifier << " ";
-        //     for(int j = 0; j < givenData[0].features.size(); j++){
-        //         cout << givenData[i].features[j] << " ";
-        //     }
-        //     cout << "size:" << givenData[0].features.size() << endl;
-        // }
     }
 
     vector<vector<double>> featuresGrouped(){
@@ -90,7 +83,6 @@ class Classifier{
             }
             stdev = sqrt(variance/(double)featureSet[i].size());
             meanByStd.push_back(avg/stdev);            
-            //cout << setprecision(5) << "Avg/Stdev: " << avg / stdev << endl;
         }
         
         //NORMALIZING FEATURES
@@ -107,7 +99,6 @@ class Classifier{
         LoadEntriesFromFile(filepath);
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop-start);
-        cout << "Time taken to import data is: " << duration.count()/1000.0 << " ms. " << endl << endl;
         
         start = high_resolution_clock::now();
         
@@ -116,16 +107,6 @@ class Classifier{
         normalizer(featSet);
         stop = high_resolution_clock::now();
         duration = duration_cast<microseconds>(stop-start);
-        cout << "Time taken to normalize data is: " << duration.count()/1000.0 << " ms. " << endl << endl;
-
-        //stop
-        // for(int i = 0; i < givenData.size(); i++){
-        //     cout << "INSTANCE ID: " << i + 1 << " " << endl;
-        //     for(int j = 0; j < givenData[i].normalizedFeat.size(); j++){
-        //         cout << givenData[i].normalizedFeat[j] << ", ";
-        //     }
-        //     cout << endl << endl;
-        // }
     }
 
 
@@ -133,7 +114,7 @@ class Classifier{
         double dist = 0;
         for(int i = 0; i < featuresSubset.size(); i++){
 
-            dist += (pow((testPoint.normalizedFeat[featuresSubset[i]] - neighbor.normalizedFeat[featuresSubset[i]]),2));
+            dist += (pow((testPoint.normalizedFeat[featuresSubset[i]-1] - neighbor.normalizedFeat[featuresSubset[i]-1]),2));
             
         }
         //cout << "Distance from the test to the neighbor is: " << neighbor.distance << endl;
@@ -144,34 +125,56 @@ class Classifier{
         int predictedClass;
         featuresSubset = featuresToUse;
         priority_queue<Data, vector<Data>, compareEuclideanDistance> q;
-        for(int i = 0; i < givenData.size(); i++){
-            if(i == id){
-                continue;
-            }
-            givenData[i].setDistance(calculateDistance(givenData[id], givenData[i]));
-            q.push(givenData[i]);
+        if(N  <= 1){ //This is for 1 nearest Neighbor to help improve runtime
+            Data nearestPoint;
+            nearestPoint.setDistance(9999);
+            for(int i = 0; i < givenData.size(); i++){
+                if(i == id){
+                    continue;
+                }
+                givenData[i].setDistance(calculateDistance(givenData[i], givenData[id]));
 
-        }
-        vector<Data> nearestNeighbors;
-        int class1 = 0;
-        int class2 = 0;
-        for(int i = 0; i < N; i++){
-            nearestNeighbors.push_back(q.top());
-            if(q.top().classifier == 1){
-                class1++;
+                if(nearestPoint.distance <= givenData[i].distance){
+                    continue;
+                } else {
+                    nearestPoint = givenData[i];
+                }
+
+
+            }
+            
+            return nearestPoint.classifier;
+
+        }else{ //This is for N nearest Neighbors where N > 1 but it is much slower due to use of PQ
+            for(int i = 0; i < givenData.size(); i++){
+                if(i == id){
+                    continue;
+                }
+                givenData[i].setDistance(calculateDistance(givenData[id], givenData[i]));
+                q.push(givenData[i]);
+
+            }
+            vector<Data> nearestNeighbors;
+            int class1 = 0;
+            int class2 = 0;
+            for(int i = 0; i < N; i++){
+                nearestNeighbors.push_back(q.top());
+                if(q.top().classifier == 1){
+                    class1++;
+                } else {
+                    class2++;
+                }
+            }
+            
+            if(max(class1, class2) == class1){
+                predictedClass = 1;
             } else {
-                class2++;
+                predictedClass = 2;
             }
-        }
-        
-        if(max(class1, class2) == class1){
-            predictedClass = 1;
-        } else {
-            predictedClass = 2;
-        }
 
-    
-        return predictedClass;
+        
+            return predictedClass;
+        }
     }
 
 };
