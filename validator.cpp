@@ -9,7 +9,7 @@ class Validator{
             N = n;
         }
 
-        double evaluateAccuracy(Classifier cl){
+        double evaluateAccuracy(Classifier cl){ //evaluating the accuracy of each feature subset by using 1-Fold cross validation
             double totalTests = 0;
             double correct = 0;
 

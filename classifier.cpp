@@ -24,7 +24,7 @@ class Classifier{
         }
     };  
 
-    void LoadEntriesFromFile(string filepath){
+    void LoadEntriesFromFile(string filepath){ // Where we load all the data from the input file
         cout << "Loading data from " << filepath << endl;
         ifstream fin;
         fin.open(filepath);
@@ -56,7 +56,7 @@ class Classifier{
 
     }
 
-    vector<vector<double>> featuresGrouped(){
+    vector<vector<double>> featuresGrouped(){  //Groups each data points featire column for normalizing purposes
         vector<vector<double>> featureColumns(numOfFeatures);
         for(int i = 0; i < givenData.size(); i++){
             for(int j = 0; j < givenData[i].features.size(); j++){
@@ -67,7 +67,7 @@ class Classifier{
         return featureColumns;
     }
 
-    void normalizer(vector<vector<double>> featureSet){
+    void normalizer(vector<vector<double>> featureSet){  //Normalize the features of all the data points
         vector<double> meanByStd;
         
         cout << "Normalizing data of " << givenData.size() << " data entries" << endl;
@@ -94,7 +94,7 @@ class Classifier{
         }
     }
 
-    void train(string filepath){
+    void train(string filepath){  //Train and normalize the data set and store it into givenData
         auto start = high_resolution_clock::now();
         LoadEntriesFromFile(filepath);
         auto stop = high_resolution_clock::now();
@@ -110,18 +110,17 @@ class Classifier{
     }
 
 
-    double calculateDistance(Data testPoint, Data neighbor){
+    double calculateDistance(Data testPoint, Data neighbor){ //Calculate the distance from the current point to the neighbor point
         double dist = 0;
         for(int i = 0; i < featuresSubset.size(); i++){
 
             dist += (pow((testPoint.normalizedFeat[featuresSubset[i]-1] - neighbor.normalizedFeat[featuresSubset[i]-1]),2));
             
         }
-        //cout << "Distance from the test to the neighbor is: " << neighbor.distance << endl;
         return sqrt(dist);
     }
 
-    int test(int id, vector<int> featuresToUse, int N){
+    int test(int id, vector<int> featuresToUse, int N){  //use our classifier to return a predicted class for our current data point
         int predictedClass;
         featuresSubset = featuresToUse;
         priority_queue<Data, vector<Data>, compareEuclideanDistance> q;

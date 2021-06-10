@@ -87,7 +87,7 @@ class search{
                 node* maxNode = curr;
                 foundNewMax = false;
                 for(int i = 1; i < features + 1; i++){ // loop through features we wanna add
-                    if(curr->features.count(i)){ // if the feature we wanna add already exsists then we dont make a child
+                    if(curr->features.count(i)){ // if the feature we wanna remove already exsists then we dont make a child
                         node* parent = new node();
                         parent->features = curr->features;
                         parent->features.erase(i);
