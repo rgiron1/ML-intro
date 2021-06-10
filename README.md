@@ -1,4 +1,4 @@
 # ML-intro
 
-##How to use:
+## How to use:
 When the program is ran a question will display asking you to enter the name of the file that needs to be trained. Enter the file name and then you will be prompted to select which algorithm you would like to run on the trained data. Select either backwards or forwards. The forwards selection algorithm will start with checking the accuracy of the empty feature subset. It will then add each of the exisiting features and continue to do so only for the feature subset that yeilds the higest accuracy. Once our current level of feature subsets does not return a higher accuracy that our previous levels max accuracy, the algoritm ends and we have found our best feature subset. For Backwards Elmination it works the same way exept the instead of starting with the empty feature subset, we start will the full feature subset and remove one every time.
